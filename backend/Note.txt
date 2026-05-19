@@ -1,0 +1,14 @@
+------------------------------------------------------------------------------------------
+
+FINAL STACK (Recommended) : -
+
+Frontend -      ReactJS
+                Tailwind CSS
+                Axios
+
+Backend -       FastAPI
+                pytubefix
+                ffmpeg-python
+
+Deployment -    Frontend → Vercel
+                Backend → Render
