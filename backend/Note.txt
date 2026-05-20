@@ -13,6 +13,21 @@ Backend -       FastAPI
 Deployment -    Frontend → Vercel
                 Backend → Render
 
+
+# To Create Virtual Environment inside backend folder (TO store all python packages here only)
+> python -m venv venv
+
+Note : To Activate this Environment to work on : >venv\Scripts\activate
+
+
+# Install Packages-
+
+> pip install fastapi uvicorn pytubefix ffmpeg-python python-multipart
+
+# Create requirements.txt -
+
+> pip freeze > requirements.txt
+
 # To Run FrontEnd and Backend Project -
 
 FrontEnd ReactJS Run : npm run dev
