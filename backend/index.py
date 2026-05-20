@@ -35,6 +35,7 @@ import ffmpeg
 import os
 import re
 import uuid
+from fastapi import BackgroundTasks
 
 app = FastAPI()
 
@@ -48,14 +49,15 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=["Content-Disposition"],
 )
 
 # -----------------------------
 # Folders
 # -----------------------------
 
-DOWNLOAD_FOLDER = "downloads"
-TEMP_FOLDER = "temp"
+DOWNLOAD_FOLDER = "merge_downloads"
+TEMP_FOLDER = "raw_temp"
 
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 os.makedirs(TEMP_FOLDER, exist_ok=True)
@@ -64,6 +66,7 @@ os.makedirs(TEMP_FOLDER, exist_ok=True)
 # Request Model
 # -----------------------------
 
+
 class VideoRequest(BaseModel):
     url: str
 
@@ -71,13 +74,15 @@ class VideoRequest(BaseModel):
 # HOME API END POINT
 # -----------------------------
 
+
 @app.get("/")
 def home():
     return {"message": "YouTube Downloader Backend Running"}
 
 # -----------------------------
-# VIDEO INFO API END POint 
+# VIDEO INFO API END POint
 # -----------------------------
+
 
 @app.post("/video-info")
 def get_video_info(data: VideoRequest):
@@ -142,8 +147,9 @@ def get_video_info(data: VideoRequest):
 # DOWNLOAD VIDEO
 # -----------------------------
 
+
 @app.get("/download-video/{itag}")
-def download_video(url: str, itag: int):
+def download_video(url: str, itag: int, background_tasks: BackgroundTasks):
 
     try:
         yt = YouTube(url)
@@ -165,7 +171,13 @@ def download_video(url: str, itag: int):
             f"{unique_id}_audio.mp4"
         )
 
-        output_filename = f"{safe_title}.mp4"
+        # output_filename = f"{safe_title}.mp4"
+
+        output_filename = (
+            f"{safe_title}"
+            f" [{video_stream.resolution}_{video_stream.fps}fps]"
+            f".mp4"
+        )
 
         output_path = os.path.join(
             DOWNLOAD_FOLDER,
@@ -201,14 +213,19 @@ def download_video(url: str, itag: int):
             acodec='aac'
         ).run(overwrite_output=True)
 
-        # Cleanup temp
+        # Cleanup raw_temp audio and video files -
         os.remove(video_path)
         os.remove(audio_path)
+
+        # Delete final merged file AFTER response is sent -
+        background_tasks.add_task(os.remove, output_path)
+
+        # print("output_filenamerowdyyyyyy :", output_filename)
 
         return FileResponse(
             output_path,
             media_type='video/mp4',
-            filename=output_filename
+            filename=output_filename 
         )
 
     except Exception as e:
@@ -218,8 +235,9 @@ def download_video(url: str, itag: int):
 # DOWNLOAD AUDIO
 # -----------------------------
 
+
 @app.get("/download-audio/{itag}")
-def download_audio(url: str, itag: int):
+def download_audio(url: str, itag: int, background_tasks: BackgroundTasks):
 
     try:
         yt = YouTube(url)
@@ -236,7 +254,13 @@ def download_audio(url: str, itag: int):
             f"{unique_id}.mp4"
         )
 
-        output_filename = f"{safe_title}.mp3"
+        # output_filename = f"{safe_title}.mp3"
+
+        output_filename = (
+            f"{safe_title}"
+            f" [{audio_stream.abr}]"
+            f".mp3"
+        )
 
         output_path = os.path.join(
             DOWNLOAD_FOLDER,
@@ -258,6 +282,9 @@ def download_audio(url: str, itag: int):
 
         # Cleanup
         os.remove(temp_audio)
+
+        # Delete final audio file AFTER response is sent -
+        background_tasks.add_task(os.remove, output_path)
 
         return FileResponse(
             output_path,

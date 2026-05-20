@@ -1,6 +1,6 @@
 ------------------------------------------------------------------------------------------
 
-FINAL STACK (Recommended) : -
+# FINAL STACK (Recommended) : -
 
 Frontend -      ReactJS
                 Tailwind CSS
@@ -12,3 +12,48 @@ Backend -       FastAPI
 
 Deployment -    Frontend → Vercel
                 Backend → Render
+
+# To Run FrontEnd and Backend Project -
+
+FrontEnd ReactJS Run : npm run dev
+BackEnd FastAPI Run : uvicorn index:app --reload
+
+FrontEnd Running on Url Port: http://localhost:5173/
+BackEnd Running on Url Port : http://127.0.0.1:8000/
+
+# To TEST Backedn API : Python FastAPI Inbuilt tool "FastAPI Swagger UI" -
+
+Open browser, Hit: http://127.0.0.1:8000/docs
+
+And Test Following End Points :
+
+/video-info
+/download-video
+/download-audio
+
+
+# DEPLOY BACKEND ON RENDER -
+Steps : 
+
+i.Create Redner account
+ii. Build Command: >pip install -r requirements.txt
+iii. Start Command: >uvicorn index:app --host 0.0.0.0 --port 10000
+
+# DEPLOY FRONTEND ON VERCEL -
+Steps : 
+
+i. Import frontend from github repo
+
+
+# CHANGE API URL At FrontEnd Code After Backend Deployment -
+
+Note : Before Deployment, User Must Change Add Backend Deployed URL into frontend code -
+
+
+Replace:
+
+const API = "http://127.0.0.1:8000";
+
+with:
+
+const API = "https://your-render-backend-url.onrender.com";
