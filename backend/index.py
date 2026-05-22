@@ -152,7 +152,7 @@ def get_video_info(data: VideoRequest):
 def download_video(url: str, itag: int, background_tasks: BackgroundTasks):
 
     try:
-        yt = YouTube(url)
+        yt = YouTube(url, 'WEB')
 
         safe_title = re.sub(r'[<>:"/\\|?*]', '-', yt.title)
         safe_title = re.sub(r'[\u200B-\u200D\uFEFF]', '', safe_title).strip()
@@ -225,7 +225,7 @@ def download_video(url: str, itag: int, background_tasks: BackgroundTasks):
         return FileResponse(
             output_path,
             media_type='video/mp4',
-            filename=output_filename 
+            filename=output_filename
         )
 
     except Exception as e:
