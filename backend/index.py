@@ -88,7 +88,13 @@ def home():
 def get_video_info(data: VideoRequest):
 
     try:
-        yt = YouTube(data.url, 'WEB')
+
+        proxies = {
+        'http': 'http://tojwlysw:rn26dwf8dl5l@23.95.150.145:6114',
+        'http': 'http://tojwlysw:rn26dwf8dl5l@38.154.203.95:6114',
+    
+        }
+        yt = YouTube(data.url, 'WEB', proxies=proxies)
 
         # Clean title
         safe_title = re.sub(r'[<>:"/\\|?*]', '-', yt.title)
