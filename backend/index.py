@@ -88,7 +88,7 @@ def home():
 def get_video_info(data: VideoRequest):
 
     try:
-        yt = YouTube(data.url)
+        yt = YouTube(data.url, 'WEB')
 
         # Clean title
         safe_title = re.sub(r'[<>:"/\\|?*]', '-', yt.title)
@@ -240,7 +240,7 @@ def download_video(url: str, itag: int, background_tasks: BackgroundTasks):
 def download_audio(url: str, itag: int, background_tasks: BackgroundTasks):
 
     try:
-        yt = YouTube(url)
+        yt = YouTube(url, 'WEB')
 
         safe_title = re.sub(r'[<>:"/\\|?*]', '-', yt.title)
         safe_title = re.sub(r'[\u200B-\u200D\uFEFF]', '', safe_title).strip()
